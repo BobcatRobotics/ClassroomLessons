@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "modules": [
+    {
+      "id": "dutycycle-subsystem",
+      "title": "Subsystem : Duty Cycle Motor Control",
+      "description": "Duty cycle control",
+      "subdir": "modules/dutycycle-subsystem",
+      "kind": "robot",
+      "order": 10
+    }
+  ]
+}
