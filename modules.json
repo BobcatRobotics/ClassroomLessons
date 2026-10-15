@@ -5,7 +5,7 @@
       "id": "dutycycle-subsystem",
       "title": "Subsystem : Duty Cycle Motor Control",
       "description": "Duty cycle control",
-      "subdir": "modules/dutycycle-subsystem",
+      "subdir": "modules/dutycycle-mechanism",
       "kind": "robot",
       "order": 10
     }
