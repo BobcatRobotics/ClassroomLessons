@@ -36,7 +36,7 @@ You will learn how to:
 - Create a shooting command with a target distance of one meter.
 - Pass a value using a Java lambda expression.
 
-**Instructions:** [Exercise 1 — Default Teleop](docs/exercises/01-default-teleop/README.md)
+**Instructions:** [Exercise 1 — Default Teleop](docs/exercises/01-default-teleop.md)
 
 ### Exercise 2: Shooter Mechanism
 
@@ -55,7 +55,7 @@ You will learn how to:
 - Compose flywheel operations into commands.
 - Name commands for debugging and telemetry.
 
-**Instructions:** [Exercise 2 — Shooter Mechanism](docs/exercises/02-shooter-mechanism/README.md)
+**Instructions:** [Exercise 2 — Shooter Mechanism](docs/exercises/02-shooter-mechanism.md)
 
 ### Exercise 3: Shooter I/O Interface
 
@@ -73,7 +73,7 @@ You will learn how to:
 - Use `@AutoLog` with AdvantageKit.
 - Understand how real, simulated, and fake implementations can share the same interface.
 
-**Instructions:** [Exercise 3 — Shooter I/O Interface](docs/exercises/03-shooter-io/README.md)
+**Instructions:** [Exercise 3 — Shooter I/O Interface](docs/exercises/03-shooter-io.md)
 
 ### Exercise 4: Real Shooter Hardware
 
@@ -93,7 +93,7 @@ You will learn how to:
 - Apply duty-cycle output requests.
 - Verify the integration between hardware and mechanism layers.
 
-**Instructions:** [Exercise 4 — Real Shooter Hardware](docs/exercises/04-shooter-real/README.md)
+**Instructions:** [Exercise 4 — Real Shooter Hardware](docs/exercises/04-shooter-real.md)
 
 ---
 
