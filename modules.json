@@ -8,6 +8,14 @@
       "subdir": "modules/dutycycle-mechanism",
       "kind": "robot",
       "order": 10
+    },
+    {
+      "id": "velocity-subsystem",
+      "title": "Subsystem : Velocity Motor Control",
+      "description": "Velocity motor control",
+      "subdir": "modules/velocity-mechanism",
+      "kind": "robot",
+      "order": 11
     }
   ]
 }
