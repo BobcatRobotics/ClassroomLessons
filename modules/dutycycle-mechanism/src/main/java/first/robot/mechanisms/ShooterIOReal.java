@@ -32,7 +32,7 @@ import first.robot.constants.ShooterConstants;
  * using the project requirements.
  */
 @Logged
-public class ShooterReal implements Mechanism, ShooterIO {
+public class ShooterIOReal implements Mechanism, ShooterIO {
 
   /** TalonFX controller responsible for receiving shooter output requests. */
   private final TalonFX flywheelMotorPrimary;
@@ -52,7 +52,7 @@ public class ShooterReal implements Mechanism, ShooterIO {
   /**
    * Creates the real shooter flywheel controller.
    */
-  public ShooterReal() {
+  public ShooterIOReal() {
     // TODO 1: Construct the primary TalonFX using ShooterConstants.
     // TODO 2: Construct the secondary TalonFX using ShooterConstants.
     // TODO 3: Configure the secondary motor to follow the primary in the
@@ -77,7 +77,7 @@ public class ShooterReal implements Mechanism, ShooterIO {
    * @return a command that repeatedly requests the primary motor to stop
    */
   @Override
-  public Command idle() {
+  public void stop() {
     // TODO 7: Create a repeatedly executing command that stops the primary motor.
     // TODO 8: Name the command "ShooterFlywheel.Idle".
     return null;
@@ -91,7 +91,7 @@ public class ShooterReal implements Mechanism, ShooterIO {
    * @return a command that repeatedly applies the supplied duty-cycle output
    */
   @Override
-  public Command runFlywheelDutyOutput(Supplier<Double> speed) {
+  public void set(double volts) {
     // TODO 9: Create a repeatedly executing command.
     // TODO 10: Read the current output from the supplier on each execution.
     // TODO 11: Apply the output using the reusable DutyCycleOut request.

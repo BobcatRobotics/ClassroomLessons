@@ -52,19 +52,19 @@ Consult the project's command framework documentation if you are unsure about th
 
 ### 5. Create the shooter command
 
-The shooter subsystem exposes a `shoot(...)` method.
+The shooter subsystem exposes a `set(...)` method.
 
 **Your task:** Call this method on the existing shooter subsystem and provide the requested target distance.
 
 Read the method declaration in the shooter implementation to determine what type of argument it expects.
 
-### 6. Specify a distance of one meter
+### 6. Specify the dutyCycle output
 
 The project uses WPILib's strongly typed units API. The static import of `Meters` allows you to construct a distance without repeatedly qualifying the class name.
 
 For example, `Meters.of(1)` represents a distance of one meter.
 
-**Your task:** Supply that distance through the argument expected by `shoot(...)`. Pay attention to whether the method expects a value directly or a `Supplier` that provides the value.
+**Your task:** Supply that dutyCycle expected by `set(...)`. Pay attention to whether the method expects a value directly or a `double` that provides the value.
 
 ## Completion checklist
 
@@ -81,5 +81,4 @@ For example, `Meters.of(1)` represents a distance of one meter.
 1. Why does the constructor receive a `Robot` instance?
 2. What is the difference between selecting a button and binding a command to it?
 3. What does `onTrue(...)` do?
-4. Why might a subsystem method accept a `Supplier` instead of a distance directly?
-5. What advantages do strongly typed units provide over using an unqualified `double`?
+4. Why might a subsystem method accept a `double dutyCycle` ?

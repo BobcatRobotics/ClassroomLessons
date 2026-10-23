@@ -6,7 +6,6 @@ Implement a shooter mechanism that selects a flywheel duty-cycle output based on
 
 By completing this exercise, you will learn how to:
 
-- Use an interpolating lookup table.
 - Work with Java `Supplier` functional interfaces.
 - Create commands using the Command V3 coroutine API.
 - Configure a mechanism's default command.
@@ -60,87 +59,66 @@ The framework calls this method periodically. The shooter input structure is alr
 - What information does AdvantageKit record?
 - Why does the mechanism use an input structure instead of logging every field individually?
 
-## Task 3: Understand the lookup table
 
-The `FLYWHEEL_LUT` field maps a target distance to a `Double` representing flywheel duty-cycle output.
-
-The table is already populated with these values:
-
-| Target distance | Duty-cycle output |
-|---:|---:|
-| 0 m | 1.0 |
-| 0.5 m | 0.8 |
-| 1.0 m | 0.6 |
-| 1.5 m | 0.4 |
-| 2.0 m | 0.2 |
-| 2.5 m | 0.0 |
-
-The configured interpolators determine how values between the entries are calculated.
-
-**Your tasks:**
-
-1. Identify the key and value types used by the table.
-2. Explain the purpose of each interpolator.
-3. Determine the expected output at a distance of 1.25 meters.
-4. Determine the expected output at a distance of 2.25 meters.
-5. Explain what happens when a requested distance falls outside the configured range, based on the project's `InterpolatingTreeMap` implementation.
-
-Do not replace the table with a series of `if` statements. The goal is to learn how to use the supplied interpolation API.
-
-## Task 4: Implement the idle command
+## Task 3: Implement the idle command
 
 Complete `idle()`.
 
 The `ShooterReal` implementation provides the flywheel's idle behavior. The command should delegate to that implementation through the Command V3 coroutine API.
 
+**Understanding CoRoutines**
+There are three key pieces:
+- run(...) builds a coroutine-backed command.
+- coroutine gives the command access to operations that pause execution, wait for conditions, and coordinate other commands.
+- coroutine.yield() suspends the current command so the scheduler can run other commands.
+The lambda is not simply a callback that WPILib calls once per scheduler cycle. Instead, WPILib runs the command body until it returns, reaches a yielding operation, or encounters an error. When it yields, the framework saves its execution state and can resume it later.
+
+    - Executes once but with an while loop to keep it running
+    ```java 
+    return run(coroutine -> {
+      while (true) {
+        /*
+            Your code goes here
+        */
+        coroutine.yield();
+      }
+    }).named("CommandName");
+    ```
+    - Executes repeatidly over and over again
+    ```java 
+    return runRepeatedly(
+        // repeatedly execute method
+    ).named("CommandName");
+    ```
 **Requirements:**
 
-1. Create a command using the mechanism's `run(...)` API.
+1. Create a command using the mechanism's `run(...)` or `runRepeatedly` API.
 2. Use the coroutine to await completion of the flywheel's idle operation.
 3. Name the resulting command `Shooter.Idle`.
 4. Return the command.
 
 **Questions to consider:**
 
-- What does `awaitAll(...)` accomplish?
 - Why does `idle()` return a `Command` instead of directly controlling the motor?
 - How does naming a command help with debugging and telemetry?
 
-## Task 5: Calculate the requested flywheel output
 
-Complete the beginning of `shoot(Supplier<Distance> targetDistance)`.
+## Task 4: Create the shooting command
 
-The method receives a supplier rather than a distance directly. This means the distance can be obtained by calling `targetDistance.get()`.
-
-**Requirements:**
-
-1. Create a `Supplier<Double>` named `flywheelDutyOutput`.
-2. When evaluated, it must obtain the current target distance.
-3. Use that distance to query `FLYWHEEL_LUT`.
-4. Keep the lookup logic in the supplier instead of duplicating the interpolation calculation.
-
-**Questions to consider:**
-
-- What is the difference between `Distance` and `Supplier<Distance>`?
-- What does `targetDistance.get()` return?
-- Why does the lookup table return a `Double` rather than a `Distance`?
-
-## Task 6: Create the shooting command
-
-Finish the `shoot(...)` method.
+Finish the `set(...)` method.
 
 The flywheel implementation exposes an operation for running at a duty-cycle output supplied by the caller.
 
 **Requirements:**
 
 1. Create a command using the mechanism's `run(...)` API.
-2. Await the flywheel operation using the `flywheelDutyOutput` supplier.
-3. Name the resulting command `Shooter.Shoot`.
+2. Await the flywheel operation using the `dutyCycle` double.
+3. Name the resulting command `Shooter.set`.
 4. Return the command.
 
 The method should use the lookup table to select the output. It should not directly set a motor output in `Shooter`.
 
-## Task 7: Verify the implementation
+## Task 5: Verify the implementation
 
 Build the project and run the applicable unit tests.
 
@@ -159,8 +137,8 @@ Check the following scenarios:
 ## Reflection questions
 
 1. Why is interpolation useful for a shooter?
-2. What advantage does `Supplier<Double>` provide over calculating the output once?
-3. Why should the mechanism delegate hardware behavior to `ShooterReal`?
+2. What advantage does `double dutyCycle` provide over calculating the output once?
+3. Why should the mechanism delegate hardware behavior to `ShooterIOReal`?
 4. What is the relationship between a command and a mechanism?
 5. How does AdvantageKit help diagnose problems when the robot is running?
 6. What would need to change if the lookup table were calibrated for a different target or shooting configuration?

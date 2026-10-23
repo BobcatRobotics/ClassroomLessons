@@ -1,23 +1,58 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package first.robot.constants;
 
+import static org.wpilib.units.Units.Amps;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+/** Configuration constants for the shooter flywheel. */
 public final class ShooterConstants {
-  public static final int HOOD_MOTOR_ID = 10;
-  public static final int PRIMARY_SHOOTER_MOTOR_ID = 11;
-  public static final int SECONDARY_SHOOTER_MOTOR_ID = 12;
-  public static final int TERTIARY_SHOOTER_MOTOR_ID = 13;
-  public static final int QUATERNARY_SHOOTER_MOTOR_ID = 14;
+  /** CAN device ID for the shooter motor. */
+  public static final int CAN_ID = 1;
 
-  public static final double HOOD_KP = 80;
+  /** Motor rotations per flywheel rotation. */
+  public static final double GEAR_RATIO = 1.0;
 
-  /** Example motor velocity feedforward constant, in volts per RPM. */
-  public static final double EXAMPLE_MOTOR_KV = 12d / 6000d;
+  /** Flywheel moment of inertia in kg m^2. */
+  public static final double MOMENT_OF_INERTIA_KG_M2 = 0.0025;
 
-  /** Voltage necessary to break static friction to get the flywheel moving. */
-  public static final double FLYWHEEL_KS = 1.25;
+  /** Whether the motor uses brake neutral mode. */
+  public static final boolean BRAKE_MODE = true;
 
-  public static final double FLYWHEEL_KP = 100;
+  /** Maximum stator current in amps. */
+  public static final double STATOR_CURRENT_LIMIT_AMPS = 40.0;
+
+  /** Velocity proportional gain. */
+  public static final double KP = 5.0;
+
+  /** Velocity integral gain. */
+  public static final double KI = 0.0;
+
+  /** Velocity derivative gain. */
+  public static final double KD = 0.0;
+
+  private ShooterConstants() {
+    throw new UnsupportedOperationException("Utility class");
+  }
+
+  /**
+   * Creates the common TalonFX configuration.
+   *
+   * @return configured TalonFX settings
+   */
+  public static TalonFXConfiguration createMotorConfiguration() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.Feedback.withSensorToMechanismRatio(GEAR_RATIO);
+    config.Slot0.withKP(KP).withKI(KI).withKD(KD);
+    config.Slot0.withKS(0.0).withKV(0.0).withKA(0.0);
+    config.MotorOutput.withNeutralMode(
+        BRAKE_MODE ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    config.CurrentLimits
+        .withStatorCurrentLimit(Amps.of(STATOR_CURRENT_LIMIT_AMPS))
+        .withStatorCurrentLimitEnable(true);
+
+    return config;
+  }
 }

@@ -7,12 +7,16 @@ package first.robot.mechanisms;
 
 import static org.wpilib.units.Units.Meters;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.command3.Trigger;
 import org.wpilib.math.interpolation.InterpolatingTreeMap;
+import org.wpilib.system.RobotController;
+import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Distance;
 
 import first.robot.lookup.LookupTables;
@@ -46,9 +50,6 @@ public class Shooter implements Mechanism {
     FLYWHEEL_LUT.put(Meters.of(2.5), 0.0);
   }
 
-  /** Implementation responsible for controlling the flywheel hardware. */
-  private final ShooterReal flywheel = new ShooterReal();
-
   /**
    * Creates a shooter mechanism using the specified I/O implementation.
    *
@@ -59,6 +60,28 @@ public class Shooter implements Mechanism {
     // TODO 2: Register the idle command as the default command.
   }
 
+
+  /** Returns the measured flywheel velocity. */
+  public AngularVelocity getVelocity() {
+    return RotationsPerSecond.of(inputs.velocityRotationsPerSecond);
+  }
+
+  /** Returns the requested velocity when velocity control is active. */
+  public Optional<AngularVelocity> getGoalVelocity() {
+    return Optional.ofNullable(goalVelocity);
+  }
+
+  /** Returns the measured motor voltage. */
+  public org.wpilib.units.measure.Voltage getVoltage() {
+    return Volts.of(inputs.appliedVolts);
+  }
+
+  /** Returns the measured motor stator current. */
+  public org.wpilib.units.measure.Current getCurrent() {
+    return org.wpilib.units.Units.Amps.of(inputs.statorCurrentAmps);
+  }
+  
+
   /**
    * Updates shooter input data and records it using AdvantageKit.
    */
@@ -67,30 +90,39 @@ public class Shooter implements Mechanism {
     // TODO 4: Record the inputs with AdvantageKit.
   }
 
+
   /**
-   * Creates the shooter's idle command.
+   * Drives the flywheel using an open-loop duty cycle.
    *
-   * @return a command that places the flywheel in its idle state
+   * @param dutyCycle output from -1.0 to 1.0
+   * @return command that maintains the requested output
    */
-  @Override
-  public Command idle() {
-    // TODO 5: Create a command that runs the flywheel's idle behavior.
-    // TODO 6: Name the command "Shooter.Idle".
+  public Command set(double dutyCycle) {
     return null;
   }
 
   /**
-   * Creates a command that shoots toward the hub using the supplied target distance.
+   * Creates a trigger that becomes active near a target velocity.
    *
-   * @param targetDistance supplier for the distance from the center of the robot
-   *     to the center of the target
-   * @return a command that runs the flywheel at the selected duty-cycle output
+   * @param velocity target velocity
+   * @param tolerance acceptable velocity error
+   * @return velocity tolerance trigger
    */
-  public Command shoot(Supplier<Distance> targetDistance) {
-    // TODO 7: Create a Supplier<Double> that looks up the flywheel output
-    //         for the supplied target distance.
-    // TODO 8: Create a command that runs the flywheel using that supplier.
-    // TODO 9: Name the command "Shooter.Shoot".
+  public Trigger near(
+      AngularVelocity velocity, AngularVelocity tolerance) {
+    return new Trigger(() -> getVelocity().isNear(velocity, tolerance));
+  }
+
+  /**
+   * Coasts or brakes at zero applied voltage at the lowest command priority.
+   *
+   * @return idle command
+   */
+  public Command idle() {
     return null;
   }
+  /** Call this from Robot.simulationPeriodic(). */
+  public void simulationPeriodic() {
+  }
 }
+

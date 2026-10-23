@@ -27,12 +27,26 @@ public interface ShooterIO {
      */
     @AutoLog
     class ShooterIOInputs {
+    /** Flywheel position in rotations. */
+    public double positionRotations = 0.0;
 
-        /** Measured rotational velocity of the primary flywheel, in rotations per second. */
-        public double velocityOfPrimaryRotPerSecond = 0.0;
+    /** Flywheel velocity in rotations per second. */
+    public double velocityRotationsPerSecond = 0.0;
 
-        /** Measured rotational velocity of the secondary flywheel, in rotations per second. */
-        public double velocityOfSecondaryRotPerSecond = 0.0;
+    /** Applied motor voltage in volts. */
+    public double appliedVolts = 0.0;
+
+    /** Motor stator current in amps. */
+    public double statorCurrentAmps = 0.0;
+
+    /** Motor temperature in degrees Celsius. */
+    public double temperatureCelsius = 0.0;
+
+    /** Whether closed-loop velocity control is active. */
+    public boolean velocityControlEnabled = false;
+
+    /** Requested flywheel velocity in rotations per second. */
+    public double goalVelocityRotationsPerSecond = 0.0;
     }
 
     /**
@@ -50,7 +64,7 @@ public interface ShooterIO {
      *
      * @return the command that places the shooter in its idle state
      */
-    default Command idle() {
+    default void stop() {
         // TODO 3: Determine the appropriate default behavior for this interface.
         return null;
     }
@@ -61,7 +75,7 @@ public interface ShooterIO {
      * @param speed supplier for the requested flywheel duty-cycle output
      * @return a command that applies the requested duty-cycle output
      */
-    default Command runFlywheelDutyOutput(Supplier<Double> speed) {
+    default void setVoltage(double volts) {
         // TODO 4: Determine the appropriate default behavior for this interface.
         return null;
     }
