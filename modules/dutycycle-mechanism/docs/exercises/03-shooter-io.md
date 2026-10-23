@@ -9,7 +9,7 @@ By completing this exercise, you will learn how to:
 - Define and use Java interfaces.
 - Understand default methods.
 - Represent sensor measurements in a data class.
-- Use `Supplier<Double>` to represent a requested motor output.
+- Use `double dutyCycle` to represent a requested motor output.
 - Understand how AdvantageKit's `@AutoLog` annotation supports telemetry.
 - Explain how real hardware, simulation, and unit tests can share the same interface.
 
@@ -42,8 +42,28 @@ The nested `ShooterIOInputs` class stores measurements from the shooter.
 
 It currently contains two fields:
 
-- `velocityOfPrimaryRotPerSecond`
-- `velocityOfSecondaryRotPerSecond`
+    ```java
+    /** Flywheel position in rotations. */
+    public double positionRotations = 0.0;
+
+    /** Flywheel velocity in rotations per second. */
+    public double velocityRotationsPerSecond = 0.0;
+
+    /** Applied motor voltage in volts. */
+    public double appliedVolts = 0.0;
+
+    /** Motor stator current in amps. */
+    public double statorCurrentAmps = 0.0;
+
+    /** Motor temperature in degrees Celsius. */
+    public double temperatureCelsius = 0.0;
+
+    /** Whether closed-loop velocity control is active. */
+    public boolean velocityControlEnabled = false;
+
+    /** Requested flywheel velocity in rotations per second. */
+    public double goalVelocityRotationsPerSecond = 0.0;
+    ```
 
 Both are represented as `double` values, with rotational velocity expressed in rotations per second.
 
@@ -75,7 +95,7 @@ The interface defines three default methods:
 
 - `updateInputs(...)`
 - `idle()`
-- `runFlywheelDutyOutput(...)`
+- `setVoltage(...)`
 
 A default method provides an implementation that a class can inherit or override.
 
@@ -84,7 +104,7 @@ A default method provides an implementation that a class can inherit or override
 1. Explain the difference between an abstract interface method and a default method.
 2. Determine why `updateInputs(...)` can have an empty default implementation.
 3. Explain the consequences of `idle()` returning `null`.
-4. Explain the consequences of `runFlywheelDutyOutput(...)` returning `null`.
+4. Explain the consequences of `setVoltage(...)` returning `null`.
 5. Inspect the concrete implementation and determine which methods it overrides.
 
 **Important:** These defaults are placeholders for implementations that do not provide hardware behavior. A mechanism must not attempt to schedule or await a `null` command. If you choose to change the defaults, explain your design decision and update the relevant tests.
@@ -97,7 +117,7 @@ The supplied value represents a requested motor output, normally between `-1.0` 
 
 **Your tasks:**
 
-1. Explain what `Supplier<Double>` represents.
+1. Explain what `double dutyCycle` represents.
 2. Describe how an implementation can obtain the current requested output.
 3. Explain why a supplier can be useful when a command runs repeatedly.
 4. Identify where the mechanism creates and passes this supplier.

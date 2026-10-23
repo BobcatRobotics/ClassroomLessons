@@ -7,6 +7,7 @@ package first.robot.mechanisms;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.RPM;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,6 +125,6 @@ public class ShooterTest {
    */
   @Test
   void shootCommandIsCreated() {
-    assertNotNull(shooter.shoot(() -> Meters.of(1.0)));
+    assertNotNull(shooter.set(1.0));
   }
 }

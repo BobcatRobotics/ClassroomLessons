@@ -130,19 +130,17 @@ This method receives a supplier of the desired motor output. The supplier may ca
 
 **Requirements:**
 
-1. Create a command using `runRepeatedly(...)`.
-2. Evaluate `speed.get()` inside the repeated action.
-3. Apply the resulting value using the reusable `DutyCycleOut` request.
-4. Send the control request to the primary TalonFX.
-5. Name the command `Shooter.Flywheel.RunFlywheelSpeed`.
-6. Return the command.
+1. Evaluate `speed.get()` inside the repeated action.
+2. Apply the resulting value using the reusable `DutyCycleOut` request.
+3. Send the control request to the primary TalonFX.
+4. Name the command `Shooter.Flywheel.RunFlywheelSpeed`.
+5. Return the command.
 
-The supplier must be evaluated during command execution, not just once when the command is created. This allows the requested output to change while the command is running.
 
 **Questions to consider:**
 
 - What is the expected range of a duty-cycle request?
-- Why is a `Supplier<Double>` useful here?
+- Why is a `double dutyCylce` useful here?
 - Why is the `DutyCycleOut` request stored as a field?
 - Why does this method control the primary motor instead of directly controlling both motors?
 
@@ -151,8 +149,7 @@ The supplier must be evaluated during command execution, not just once when the 
 Build the project and run its applicable tests.
 
 - [ ] Both TalonFX controllers use the configured CAN IDs.
-- [ ] The secondary motor follows the primary with opposed alignment.
-- [ ] Both velocity status signals are initialized.
+- [ ] A velocity status signals is initialized.
 - [ ] Both signals are refreshed before their measurements are read.
 - [ ] Velocity values are converted to rotations per second.
 - [ ] The input structure receives both measurements.
@@ -182,9 +179,3 @@ Never use a successful compilation as proof that motor direction or follower con
 5. How does opposed follower alignment affect the secondary motor?
 6. Why might a simulated or fake implementation be preferable for automated unit tests?
 7. How could you test that the secondary output is opposed without risking damage to the hardware?
-
-## Optional extension
-
-Add a test or diagnostic routine that verifies the primary and secondary flywheel velocities behave as expected when the motors are operated.
-
-Document how the expected relationship between the measurements depends on the mechanical configuration. Do not assume that opposed electrical output always means negative measured velocity under every sensor and mounting configuration.
