@@ -16,6 +16,14 @@
       "subdir": "modules/velocity-mechanism",
       "kind": "robot",
       "order": 11
+    },
+    {
+      "id": "position-mechanism",
+      "title": "Subsystem : Position Motor Control",
+      "description": "Position motor control",
+      "subdir": "modules/position-mechanism",
+      "kind": "robot",
+      "order": 12
     }
   ]
 }
