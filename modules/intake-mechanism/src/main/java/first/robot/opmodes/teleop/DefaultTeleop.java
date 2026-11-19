@@ -23,29 +23,6 @@ public class DefaultTeleop implements OpMode {
    * @param robot The robot instance to control.
    */
   public DefaultTeleop(Robot robot) {
-    // Spin at a slow speed while the bottom (A) face button is held, and a fast one
-    // while the right (B) one is. hold left Bumper to activate these commands
-    robot.controller
-        .faceDown().and(robot.controller.leftBumper())
-        .whileTrue(robot.shooter.setVelocity(RPM.of(2330.0)));
-    robot.controller
-        .faceRight().and(robot.controller.leftBumper())
-        .whileTrue(robot.shooter.setVelocity(RPM.of(4650.0)));
-    // Drive the flywheel with a duty cycle while the left (X) or top (Y) face
-    // button is held.
-    robot.controller.faceLeft().and(robot.controller.leftBumper()).whileTrue(robot.shooter.set(0.3));
-    robot.controller.faceUp().and(robot.controller.leftBumper()).whileTrue(robot.shooter.set(-0.3));
-
-
-    robot.controller
-      .faceDown().and(robot.controller.rightBumper())
-      .whileTrue(robot.intake.setAngle(Degrees.of(0.0)));
-    robot.controller
-      .faceRight().and(robot.controller.rightBumper())
-      .whileTrue(robot.intake.setAngle(Degrees.of(45.0)));
-    // Drive the arm with a duty cycle while the left (X) or top (Y) face button is held.
-    robot.controller.faceLeft().and(robot.controller.rightBumper()).whileTrue(robot.intake.setPivotDutyCycle(0.3));
-    robot.controller.faceUp().and(robot.controller.rightBumper()).whileTrue(robot.intake.setPivotDutyCycle(-0.3));
   }
   
 }

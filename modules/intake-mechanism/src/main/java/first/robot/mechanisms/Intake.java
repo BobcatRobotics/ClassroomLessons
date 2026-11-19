@@ -102,25 +102,9 @@ public class Intake implements Mechanism {
    * @return command that maintains the requested velocity
    */
   public Command setVelocity(AngularVelocity velocity) {
-    return run(coroutine -> {
-      while (true) {
-        if (rollerGoalVelocity == null || !velocity.isEquivalent(rollerGoalVelocity)) {
-          io.setVelocity(velocity.in(RotationsPerSecond));
-        }
-
-        rollerGoalVelocity = velocity;
-        coroutine.yield();
-      }
-    }).named("Intake Set Velocity");
   }
   /** Commands the arm to a target angle and holds it there. */
   public Command setAngle(Angle angle) {
-    return run(coroutine -> {
-      while (true) {
-        setGoalAngle(angle);
-        coroutine.yield();
-      }
-    }).named("Intake Set Angle");
   }
 
 
@@ -131,32 +115,10 @@ public class Intake implements Mechanism {
    * @return command that maintains the requested output
    */
   public Command setRollerDutyCycle(double dutyCycle) {
-    return run(coroutine -> {
-      rollerGoalVelocity = null;
-
-      while (true) {
-        io.setVoltage(0,
-            RobotController.getMeasureBatteryVoltage()
-                .in(Volts) * Math.max(-1.0, Math.min(1.0, dutyCycle)));
-
-        coroutine.yield();
-      }
-    }).named("Intake Set Duty Cycle");
   }
 
   /** Commands the arm with an open-loop duty cycle between -1 and 1. */
   public Command setPivotDutyCycle(double dutyCycle) {
-    double clampedDutyCycle = Math.max(-1.0, Math.min(1.0, dutyCycle));
-
-    return run(coroutine -> {
-      pivotGoalAngle = null;
-
-      while (true) {
-        io.setVoltage(
-            RobotController.getBatteryVoltage() * clampedDutyCycle,0);
-        coroutine.yield();
-      }
-    }).named("Intake Set Duty Cycle");
   }
 
 
@@ -175,14 +137,6 @@ public class Intake implements Mechanism {
 
   /** Holds an angle at the lowest command priority. */
   public Command hold(Angle angle) {
-    return run(coroutine -> {
-      while (true) {
-        setGoalAngle(angle);
-        coroutine.yield();
-      }
-    })
-        .withPriority(Command.LOWEST_PRIORITY)
-        .named("Intake Hold");
   }
 
   /**
@@ -191,16 +145,6 @@ public class Intake implements Mechanism {
    * @return idle command
    */
   public Command idle() {
-    return run(coroutine -> {
-      rollerGoalVelocity = null;
-
-      while (true) {
-        io.stop();
-        coroutine.yield();
-      }
-    })
-        .withPriority(Command.LOWEST_PRIORITY)
-        .named("Intake Idle");
   }
 
   /**
