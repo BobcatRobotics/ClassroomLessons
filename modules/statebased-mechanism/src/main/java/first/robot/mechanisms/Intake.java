@@ -101,26 +101,10 @@ public class Intake implements Mechanism {
    * @return command that maintains the requested velocity
    */
   public Command setVelocity(IntakeState state) {
-    return run(coroutine -> {
-      while (true) {
-        if (rollerGoalVelocity == null || !RPM.of(state.getRollerSpeed()).isEquivalent(rollerGoalVelocity)) {
-          intakeStateMachine.setState(state);
-        }
-
-        rollerGoalVelocity = RPM.of(state.getRollerSpeed());
-        coroutine.yield();
-      }
-    }).named("Intake Set Velocity");
   }
 
   /** Commands the arm to a target angle and holds it there. */
   public Command setAngle(IntakeState state) {
-    return run(coroutine -> {
-      while (true) {
-        intakeStateMachine.setState(state);
-        coroutine.yield();
-      }
-    }).named("Intake Set Angle");
   }
 
   /**
@@ -130,27 +114,10 @@ public class Intake implements Mechanism {
    * @return command that maintains the requested output
    */
   public Command setRollerDutyCycle(IntakeState state) {
-    return run(coroutine -> {
-      rollerGoalVelocity = null;
-
-      while (true) {
-        intakeStateMachine.setState(state);
-        coroutine.yield();
-      }
-    }).named("Intake Set Duty Cycle");
   }
 
   /** Commands the arm with an open-loop duty cycle between -1 and 1. */
   public Command setPivotDutyCycle(IntakeState state) {
-
-    return run(coroutine -> {
-      pivotGoalAngle = null;
-
-      while (true) {
-        intakeStateMachine.setState(state);
-        coroutine.yield();
-      }
-    }).named("Intake Set Duty Cycle");
   }
 
   /**
@@ -167,14 +134,6 @@ public class Intake implements Mechanism {
 
   /** Holds an angle at the lowest command priority. */
   public Command hold(Angle angle) {
-    return run(coroutine -> {
-      while (true) {
-        intakeStateMachine.setState(IntakeState.IDLE);
-        coroutine.yield();
-      }
-    })
-        .withPriority(Command.LOWEST_PRIORITY)
-        .named("Intake Hold");
   }
 
   /**
@@ -183,16 +142,6 @@ public class Intake implements Mechanism {
    * @return idle command
    */
   public Command idle() {
-    return run(coroutine -> {
-      rollerGoalVelocity = null;
-
-      while (true) {
-        intakeStateMachine.setState(IntakeState.IDLE);
-        coroutine.yield();
-      }
-    })
-        .withPriority(Command.LOWEST_PRIORITY)
-        .named("Intake Idle");
   }
 
   /**
@@ -204,23 +153,6 @@ public class Intake implements Mechanism {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
-
-    switch (intakeStateMachine.getState()) {
-      case IDLE:
-        io.stop();
-        break;
-      case REVERSEDUTYCYCLE:
-      case FORWARDDUTYCYCLE:
-        double pivotVoltage = RobotController.getMeasureBatteryVoltage()
-            .in(Volts) * Math.max(-1.0, Math.min(1.0, intakeStateMachine.getState().getPosition()));
-        double rollerVoltage = RobotController.getMeasureBatteryVoltage()
-            .in(Volts) * Math.max(-1.0, Math.min(1.0, intakeStateMachine.getState().getRollerSpeed()));
-        io.setVoltage(pivotVoltage, rollerVoltage);
-      case REVERSE:
-      case FORWARD:
-        io.setPosition(intakeStateMachine.getState().getPosition());
-        io.setVelocity(intakeStateMachine.getState().getRollerSpeed());
-    }
 
     rollerSpokeLigament.setAngle(
         inputs.rollerPositionRotations * 360.0 % 360.0);
@@ -256,8 +188,5 @@ public class Intake implements Mechanism {
 
   /** Stops the pivot and rolleer and clears its active goal. */
   public void stop() {
-    rollerGoalVelocity = null;
-    pivotGoalAngle = null;
-    io.stop();
   }
 }
