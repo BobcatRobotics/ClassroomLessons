@@ -24,6 +24,14 @@
       "subdir": "modules/position-mechanism",
       "kind": "robot",
       "order": 12
+    },
+    {
+      "id": "intake-mechanism",
+      "title": "Subsystem : Position & Velocity Motor Control",
+      "description": "Position & Velocity motor control",
+      "subdir": "modules/intake-mechanism",
+      "kind": "robot",
+      "order": 13
     }
   ]
 }
