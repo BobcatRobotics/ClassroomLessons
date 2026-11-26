@@ -19,18 +19,12 @@ public enum IntakeState implements SubsystemState{
     private final double position;
 
     IntakeState(AngularVelocity rollerSpeed, Angle position) {
-        this.rollerSpeed = rollerSpeed.magnitude();
-        this.position = position.magnitude();
     }
 
     IntakeState(double rollerSpeed, Angle position) {
-        this.rollerSpeed = rollerSpeed;
-        this.position = position.magnitude();
     }
 
     IntakeState(double rollerSpeed, double position) {
-        this.rollerSpeed = rollerSpeed;
-        this.position = position;
     }
     public double getPosition() {
         return position;

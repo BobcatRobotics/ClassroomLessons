@@ -85,40 +85,17 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setPosition(double positionRadians) {
-    pivotGoalRadians = positionRadians;
-    pivotPositionControlEnabled = true;
-
-    // The Talon is configured to interpret requests in mechanism rotations.
-    double mechanismRotations = positionRadians / (2.0 * Math.PI);
-    pivotMotor.setControl(pivotPositionRequest.withPosition(mechanismRotations));
   }
 
   @Override
   public void setVelocity(double rotationsPerSecond) {
-    rollerVelocityControlEnabled = true;
-    goalrollerVelocityRotationsPerSecond = rotationsPerSecond;
-
-    rollerMotor.setControl(
-        rollerVelocityRequest.withVelocity(
-            RotationsPerSecond.of(rotationsPerSecond)));
   }
 
   @Override
   public void setVoltage(double pivotVolts, double rollerVolts) {
-    rollerVelocityControlEnabled = false;
-    rollerMotor.setControl(rollerVoltageRequest.withOutput(Volts.of(rollerVolts)));
-
-    pivotPositionControlEnabled = false;
-    pivotMotor.setControl(pivotVoltageRequest.withOutput(Volts.of(pivotVolts)));
   }
 
   @Override
   public void stop() {
-    rollerVelocityControlEnabled = false;
-    rollerMotor.setControl(rollerVoltageRequest.withOutput(Volts.of(0.0)));
-    rollerMotor.stopMotor();
-    pivotPositionControlEnabled = false;
-    pivotMotor.setControl(rollerVoltageRequest.withOutput(Volts.of(0.0)));
-    pivotMotor.stopMotor();
   }
 }
